@@ -271,6 +271,8 @@ inline __device__ void compute_dq_dk_dv_1xN_one_iter(const Params &params, Prng 
 
     static_assert(Cta_tile_p::N % Cta_tile_p::M == 0);
     int begin = Is_causal ? loop_step_idx * Cta_tile_p::N / Cta_tile_p::M : 0;
+    // // Otherwise we'd be reading out-of-bound memory before the loop
+    // if (begin * Cta_tile_p::M >= binfo.actual_seqlen_q) return;
     const int steps = (params.seqlen_q + Cta_tile_p::M - 1) / Cta_tile_p::M - begin;
     // Wind gmem tiles to the correct position.
     gmem_q.move(begin);
